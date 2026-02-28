@@ -1,815 +1,295 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Shopping List (Fixed)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fixed Rubber Smart Calculator - M.A. Gohar</title>
     <style>
-        /* --- General Variables and Setup (Same as before) --- */
         :root {
-            --primary-color: #007bff;
-            --secondary-color: #28a745;
-            --danger-color: #dc3545;
-            --bg-light: #e9f7ff; 
-            --bg-dark: #ffffff;
-            --border-color: #ced4da;
+            --bg-color: #e0e5ec;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --text-color: #44474a;
+            --accent-pink: #ff4d8d;
+            --accent-blue: #6366f1;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-light);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding-top: 20px;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* APK mein scroll avoid karein agar fit ho raha ho */
         }
 
-        .container {
-            background-color: var(--bg-dark);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            max-width: 550px; 
-            width: 100%;
-            position: relative;
-            margin-bottom: 50px;
-        }
-
-        .header-title {
-            text-align: center;
-            color: var(--secondary-color);
-            margin-bottom: 25px;
-            font-size: 1.4em;
-            font-weight: bold;
-        }
-
-        /* --- Input and Control Styling (Same as before) --- */
-        h4 {
-            font-size: 1.1em;
-            color: #343a40;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        #top-controls {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        #date-selector-group, #budget-group {
-            flex: 1;
-        }
-        #date-selector-group label, #budget-group label {
-             font-weight: normal; 
-             font-size: 0.9em;
-             color: #6c757d;
-        }
-        #top-controls input {
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            width: 100%;
-        }
-
-
-        .input-group {
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-        .input-group label {
-            font-weight: normal;
-            margin-bottom: 3px;
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-        .input-group input, .input-group select {
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1em;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        /* Aligned Qty/Unit group */
-        #qty-unit-group {
-            display: flex;
-            gap: 10px;
-        }
-        #qty-unit-group > div {
-            flex: 1;
-        }
-        #qty-unit-group select {
-            width: 100%;
-        }
-        
-
-        /* Add Item Button */
-        #add-btn {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            margin-top: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-        #add-btn:hover {
-            background-color: #0056b3;
-        }
-
-        /* --- List and Table Styling (Same as before) --- */
-        #list-date-header {
-            font-weight: bold;
-            color: #343a40;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 10px 8px;
-            text-align: left;
-            border: 1px solid #f0f0f0;
-            font-size: 0.9em;
-        }
-
-        thead th {
-            background-color: #e9ecef;
-            color: #495057;
-            font-weight: bold;
-            border-bottom: 2px solid var(--border-color);
-        }
-        
-        .list-row {
-            background-color: #fff;
-            transition: background-color 0.2s;
-        }
-
-        .list-row.purchased {
-            background-color: #f0fff0;
-            opacity: 0.7;
-        }
-
-        .list-row.purchased td {
-            text-decoration: line-through;
-            color: #888;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--danger-color);
-            padding: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-        }
-        
-        /* Summary and Footer Buttons */
-        #summary {
+        .phone-frame {
+            background: var(--bg-color);
+            width: 92vw; max-width: 380px;
+            height: 94vh;
+            border-radius: 35px;
             padding: 15px;
-            background-color: #e9f7ff;
-            border-radius: 8px;
-            border: 1px solid #cce5ff;
-            font-weight: bold;
-            display: flex;
+            box-shadow: 15px 15px 40px var(--shadow-dark), 
+                       -15px -15px 40px var(--shadow-light);
+            display: flex; flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
         }
+
+        .brand-top {
+            text-align: center; color: #777; font-weight: 800;
+            font-size: 0.75rem; letter-spacing: 1px;
+            padding: 5px; border-radius: 10px;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+        }
+
+        .top-display {
+            background: var(--bg-color);
+            height: 20%; border-radius: 20px;
+            padding: 15px;
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), 
+                        inset -6px -6px 12px var(--shadow-light);
+            display: flex; flex-direction: column;
+            justify-content: flex-end; align-items: flex-end;
+            margin: 10px 0;
+        }
+
+        #current-operation { 
+            color: #888; font-size: 1rem; font-weight: 600;
+            text-align: right; width: 100%; word-wrap: break-word;
+            min-height: 1.2rem;
+        }
+
+        .result-row { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .eq-sign { color: #aaa; font-size: 1.2rem; font-weight: bold; }
+
+        #result { color: var(--text-color); font-size: 2.4rem; font-weight: 800; word-break: break-all; }
+
+        .white-body-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            height: 65%;
+        }
+
+        .btn {
+            background: var(--bg-color); border: none; border-radius: 12px;
+            color: var(--text-color); font-size: 1.1rem; font-weight: 700;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            box-shadow: 4px 4px 8px var(--shadow-dark), 
+                        -4px -4px 8px var(--shadow-light);
+            transition: 0.1s all ease; user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), 
+                        inset -2px -2px 5px var(--shadow-light);
+            transform: scale(0.95);
+        }
+
+        .btn.pink { color: var(--accent-pink); }
+        .btn.smart { font-size: 0.65rem; color: var(--accent-blue); letter-spacing: 0; }
         
-        #summary span#grand-total {
-            color: var(--primary-color);
-            font-size: 1.2em;
+        .btn.equal {
+            background: var(--accent-pink); color: white;
+            box-shadow: 4px 4px 10px rgba(255, 77, 141, 0.3);
         }
 
-        button {
-            width: 100%;
-            margin-top: 10px;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
+        @media (max-width: 350px) {
+            #result { font-size: 2rem; }
+            .btn { font-size: 1rem; }
         }
-        #clear-btn {
-            background-color: var(--danger-color);
-            color: white;
-        }
-        #clear-btn:hover {
-            background-color: #a71d2a;
-        }
-
-        /* Budget and Report Styling */
-        #budget-bar-container {
-            margin-top: 10px;
-            height: 20px;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .best-price-indicator { 
-            display: block; 
-            font-size: 0.8em; 
-            color: orange;
-            font-weight: bold;
-            margin-top: 3px;
-        }
-        .price-up { color: var(--danger-color); font-weight: bold; }
-        .price-down { color: var(--secondary-color); font-weight: bold; }
-        .price-same { color: #888; }
-        .store-icon {
-            margin-right: 5px;
-        }
-
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 class="header-title">
-        <i class="fas fa-shopping-cart"></i> Smart Shopping List Powered by M.A.Gohar
-    </h2>
-
-    <div id="top-controls">
-        <div id="date-selector-group">
-            <label for="date-input">List Date:</label>
-            <input type="date" id="date-input">
-        </div>
-        <div id="budget-group">
-            <label for="budget-input">Set Budget (₹):</label>
-            <input type="number" id="budget-input" placeholder="e.g., 2000" min="0" onchange="handleBudgetChange()">
-        </div>
-    </div>
+<div class="phone-frame">
+    <div class="brand-top">POWERED BY M.A. GOHAR</div>
     
-    <h4 style="margin-top:0;">Budget Status: <span id="budget-remaining" style="font-weight:normal;">Budget Not Set</span></h4>
-    <div id="budget-bar-container">
-        <div id="budget-progress-fill"></div>
-    </div>
-
-    <button onclick="generateMonthlyReport()" style="background-color:#6c757d; color:white;">
-        <i class="fas fa-chart-line"></i> View Monthly Spending Report
-    </button>
-    
-    <div id="report-container" style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px;">
-        <h4>📊 Monthly Report (<span id="report-month"></span>)</h4>
-        <p><strong>Total Spent:</strong> <span id="report-total-spent">₹0.00</span></p>
-        <p><strong>Total Discount Savings:</strong> <span id="report-discount-saved">₹0.00</span></p>
-        <p><strong>Top Purchased Item:</strong> <span id="report-top-item">N/A</span></p>
-        <p><strong>Top Expensive Item:</strong> <span id="report-top-expensive">N/A</span></p>
-        <button class="report-close-btn" onclick="document.getElementById('report-container').style.display='none'">
-            <i class="fas fa-times"></i> Close Report
-        </button>
-    </div>
-
-    <h4>Add New Item</h4>
-
-    <div class="input-group">
-        <label for="item">Item Name:</label>
-        <input type="text" id="item" placeholder="e.g., Milk">
-    </div>
-
-    <div id="qty-unit-group">
-        <div class="input-group">
-            <label for="qty">Quantity:</label>
-            <input type="number" id="qty" placeholder="e.g., 2" min="1">
-        </div>
-        <div class="input-group">
-            <label for="unit-select">Unit:</label>
-            <select id="unit-select">
-                <option value="pcs">Pcs</option>
-                <option value="kg">KG</option>
-                <option value="gm">GM</option>
-                <option value="ltr">LTR</option>
-            </select>
+    <div class="top-display">
+        <div id="current-operation"></div> 
+        <div class="result-row">
+            <span class="eq-sign">=</span>
+            <div id="result">0</div>
         </div>
     </div>
-    
-    <div class="input-group">
-        <label for="price">Price (per unit):</label>
-        <input type="number" id="price" placeholder="e.g., 50.00 (Price is always per PC/KG/LTR)" min="0">
+
+    <div class="white-body-section">
+        <button class="btn smart" onclick="calculateZakat()">ZAKAT</button>
+        <button class="btn smart" onclick="handleGST('A')">GST (A)</button>
+        <button class="btn smart" onclick="handleGST('R')">GST (R)</button>
+        <button class="btn smart" onclick="applyDiscount()">DISC</button>
+
+        <button class="btn pink" onclick="clearAll()">AC</button>
+        <button class="btn" onclick="chooseOperation('/')">/</button>
+        <button class="btn" onclick="chooseOperation('*')">×</button>
+        <button class="btn pink" onclick="deleteLast()">⌫</button>
+
+        <button class="btn" onclick="appendNumber('7')">7</button>
+        <button class="btn" onclick="appendNumber('8')">8</button>
+        <button class="btn" onclick="appendNumber('9')">9</button>
+        <button class="btn pink" onclick="applyPercentage()">%</button>
+
+        <button class="btn" onclick="appendNumber('4')">4</button>
+        <button class="btn" onclick="appendNumber('5')">5</button>
+        <button class="btn" onclick="appendNumber('6')">6</button>
+        <button class="btn pink" onclick="chooseOperation('-')">-</button>
+
+        <button class="btn" onclick="appendNumber('1')">1</button>
+        <button class="btn" onclick="appendNumber('2')">2</button>
+        <button class="btn" onclick="appendNumber('3')">3</button>
+        <button class="btn pink" onclick="chooseOperation('+')">+</button>
+
+        <button class="btn smart" onclick="showHistory()">HIST</button>
+        <button class="btn" onclick="appendNumber('0')">0</button>
+        <button class="btn" onclick="appendNumber('.')">.</button>
+        <button class="btn equal" onclick="calculateFinal()">=</button>
     </div>
-
-    <div class="input-group">
-        <label for="discount">Discount (%):</label>
-        <input type="number" id="discount" placeholder="e.g., 10" min="0" max="100" value="0">
-    </div>
-
-    <div class="input-group">
-        <label for="store">Store Name:</label>
-        <input type="text" id="store" placeholder="e.g., DMart / Local Shop">
-    </div>
-
-    <button id="add-btn"> 
-        <i class="fas fa-plus-circle"></i> Add Item
-    </button> 
-
-    <h4 style="margin-top: 25px;">List Details for <span id="list-date-header">Today</span></h4>
-
-    <div id="list-container" style="overflow-x: auto;">
-        <table>
-            <thead>
-                <tr>
-                    <th>DONE</th>
-                    <th>ITEM (STORE)</th>
-                    <th>QTY / UNIT</th>
-                    <th>PRICE (₹)</th>
-                    <th>TOTAL (₹)</th>
-                    <th>PRICE CHANGE</th>
-                    <th>ACTION</th>
-                </tr>
-            </thead>
-            <tbody id="shopping-list">
-                </tbody>
-        </table>
-    </div>
-
-    <div id="summary">
-        Estimated Grand Total: <span id="grand-total">₹0.00</span>
-        <span id="savings-display"></span>
-    </div>
-
-    <button id="clear-btn" onclick="clearList()">
-        <i class="fas fa-eraser"></i> Clear List for <span id="clear-date-text">Today</span>
-    </button>
-
 </div>
 
 <script>
-// --- Global DOM Elements ---
-const itemInput = document.getElementById('item');
-const qtyInput = document.getElementById('qty');
-const unitSelect = document.getElementById('unit-select'); 
-const priceInput = document.getElementById('price');
-const discountInput = document.getElementById('discount'); 
-const storeInput = document.getElementById('store'); 
-const listBody = document.getElementById('shopping-list');
-const grandTotalDisplay = document.getElementById('grand-total');
-const dateInput = document.getElementById('date-input');
-const listDateHeader = document.getElementById('list-date-header');
-const budgetInput = document.getElementById('budget-input');
-const budgetProgressFill = document.getElementById('budget-progress-fill');
-const budgetRemainingDisplay = document.getElementById('budget-remaining');
-const savingsDisplay = document.getElementById('savings-display'); 
-const reportContainer = document.getElementById('report-container'); 
-const clearDateText = document.getElementById('clear-date-text');
-
-// --- Global State ---
-let allShoppingLists = {};
-let currentDateKey = getTodayDateKey(); 
-
-// --- Utility Functions ---
-
-function getTodayDateKey() {
-    const today = new Date();
-    return today.toISOString().slice(0, 10); // Format YYYY-MM-DD
-}
-
-function formatReadableDate(dateKey) {
-    const date = new Date(dateKey);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-IN', options);
-}
-
-// FIX: Improved Local Storage access safety
-function loadAllLists() {
+    // Safe Audio Initialization
+    let audioCtx;
     try {
-        const storedData = localStorage.getItem('allShoppingLists');
-        allShoppingLists = storedData ? JSON.parse(storedData) : {};
-    } catch (e) {
-        console.error("Error accessing local storage. Starting with empty list.", e);
-        allShoppingLists = {};
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) { console.log("Audio not supported"); }
+
+    function playSoftClick() {
+        if (!audioCtx) return;
+        try {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.04);
+        } catch (e) {}
     }
-}
-loadAllLists(); // Load lists on script start
 
-function saveAllLists() {
-    try {
-        localStorage.setItem('allShoppingLists', JSON.stringify(allShoppingLists));
-    } catch (e) {
-        console.error("Error saving to local storage.", e);
-        // Alert the user if saving fails, as data might be lost
-        // alert("Warning: Could not save data to local storage. Your changes might be lost upon closing the browser.");
-    }
-}
+    let expression = '';
+    const resEl = document.getElementById('result');
+    const opsEl = document.getElementById('current-operation');
 
-function getCurrentDayList() {
-    if (!allShoppingLists[currentDateKey]) {
-        allShoppingLists[currentDateKey] = {
-            budget: 0,
-            items: []
-        };
-    }
-    return allShoppingLists[currentDateKey];
-}
-
-function setCurrentDayList(data) {
-    allShoppingLists[currentDateKey] = data;
-    saveAllLists();
-}
-
-/**
- * Unit Conversion Function 
- * Converts the quantity to the base unit (PCS, KG, LTR) for calculation.
- */
-function convertToCalculationUnit(qty, unit) {
-    if (unit === 'gm') {
-        // 1000 gm = 1 kg
-        return qty / 1000;
-    }
-    return qty;
-}
-
-/**
- * FIX: Voice Alert Function (English, Rate set to 0.9 for clearer speed)
- */
-function speak(text) {
-    if ('speechSynthesis' in window) {
-        speechSynthesis.cancel(); 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; // FIX: Set language to English (US)
-        utterance.rate = 0.9;    // Slower speech rate 
-        speechSynthesis.speak(utterance);
-    }
-}
-
-
-function getPreviousPrice(itemName, currentDate) {
-    const nameLower = itemName.toLowerCase();
-    let previousDateKey = null;
-    for (const dateKey in allShoppingLists) {
-        if (dateKey < currentDate) {
-            if (!previousDateKey || dateKey > previousDateKey) {
-                previousDateKey = dateKey;
+    function autoCalculate() {
+        if (!expression) { resEl.innerText = '0'; return; }
+        try {
+            const lastChar = expression.slice(-1);
+            if (!['+', '-', '*', '/'].includes(lastChar)) {
+                let result = eval(expression);
+                resEl.innerText = Number.isFinite(result) ? (Number.isInteger(result) ? result : result.toFixed(2)) : "Error";
             }
+        } catch (e) {}
+    }
+
+    function updateDisplay() {
+        opsEl.innerText = expression || '';
+        autoCalculate();
+        resEl.style.fontSize = resEl.innerText.length > 9 ? '1.6rem' : '2.4rem';
+    }
+
+    function appendNumber(n) { playSoftClick(); expression += n; updateDisplay(); }
+
+    function chooseOperation(op) {
+        playSoftClick();
+        if (!expression && op === '-') { expression = '-'; updateDisplay(); return; }
+        if (!expression) return;
+        const lastChar = expression.slice(-1);
+        if (['+', '-', '*', '/'].includes(lastChar)) {
+            expression = expression.slice(0, -1) + op;
+        } else {
+            expression += op;
         }
-    }
-    if (previousDateKey) {
-        const list = allShoppingLists[previousDateKey].items;
-        for (let i = list.length - 1; i >= 0; i--) {
-            if (list[i].name.toLowerCase() === nameLower) {
-                return list[i].price; 
-            }
-        }
-    }
-    return 0;
-}
-
-function getBestPriceAndStore(itemName) {
-    const nameLower = itemName.toLowerCase();
-    let bestPrice = Infinity;
-    let bestStore = 'N/A';
-    for (const dateKey in allShoppingLists) {
-        const list = allShoppingLists[dateKey].items;
-        list.forEach(item => {
-            if (item.name.toLowerCase() === nameLower && item.price < bestPrice) {
-                bestPrice = item.price;
-                bestStore = item.store || 'Unknown';
-            }
-        });
-    }
-    return { price: bestPrice === Infinity ? 0 : bestPrice, store: bestStore };
-}
-
-
-// --- Action Functions ---
-
-window.addItem = function() {
-    const name = itemInput.value.trim();
-    const qty = parseFloat(qtyInput.value) || 0; 
-    const price = parseFloat(priceInput.value) || 0;
-    const store = storeInput.value.trim(); 
-    const discount = parseFloat(discountInput.value) || 0; 
-    const unit = unitSelect.value; 
-
-    if (name === '') {
-        alert('Please enter an Item Name.');
-        itemInput.focus();
-        return;
-    }
-    if (qty <= 0) {
-        alert('Please enter a valid Quantity (must be a number greater than 0).');
-        qtyInput.focus();
-        return;
+        updateDisplay();
     }
 
-    const now = new Date();
-    const formattedTime = now.toLocaleTimeString('en-IN'); 
-    
-    const qtyForCalculation = convertToCalculationUnit(qty, unit);
-
-    const finalPricePerUnit = price * (1 - discount / 100);
-    
-    const newItem = { 
-        name, 
-        qty,               
-        unit,              
-        qtyCalc: qtyForCalculation, 
-        price: price, 
-        finalPrice: finalPricePerUnit, 
-        discount: discount, 
-        store, 
-        date: formattedTime, 
-        purchased: false 
-    }; 
-    
-    const currentListData = getCurrentDayList();
-    currentListData.items.push(newItem);
-    setCurrentDayList(currentListData); 
-    
-    renderList();
-    
-    speak(`${name} added to the list.`); // FIX: English Voice Alert
-
-    // Clear inputs after successful add
-    itemInput.value = '';
-    qtyInput.value = ''; 
-    priceInput.value = '';
-    discountInput.value = '0'; 
-    storeInput.value = ''; 
-    unitSelect.value = 'pcs'; 
-    itemInput.focus(); 
-}
-
-window.togglePurchased = function(index) {
-    const currentListData = getCurrentDayList();
-    currentListData.items[index].purchased = !currentListData.items[index].purchased;
-    setCurrentDayList(currentListData);
-    renderList();
-}
-
-window.deleteItem = function(index) {
-    if (confirm('Are you sure you want to delete this item?')) {
-        const currentListData = getCurrentDayList();
-        const deletedItemName = currentListData.items[index].name;
-        currentListData.items.splice(index, 1);
-        setCurrentDayList(currentListData);
-        renderList();
-        speak(`${deletedItemName} deleted.`); // FIX: English Voice Alert
-    }
-}
-
-window.handleBudgetChange = function() {
-    const budget = parseFloat(budgetInput.value) || 0;
-    const currentListData = getCurrentDayList();
-    currentListData.budget = budget;
-    setCurrentDayList(currentListData);
-    renderList();
-}
-
-window.clearList = function() {
-    if (confirm(`Are you sure you want to clear the entire list for ${formatReadableDate(currentDateKey)}? This cannot be undone.`)) {
-        const currentListData = getCurrentDayList();
-        currentListData.items = [];
-        setCurrentDayList(currentListData);
-        renderList();
-        speak('List cleared.'); // FIX: English Voice Alert
-    }
-}
-
-
-// --- Render Functions ---
-
-function updateBudgetBar(currentTotal, currentBudget) {
-    const fill = budgetProgressFill;
-    const remaining = budgetRemainingDisplay;
-
-    if (currentBudget <= 0) {
-        fill.style.width = '0%';
-        fill.textContent = '';
-        fill.style.backgroundColor = '#f0f0f0';
-        remaining.textContent = 'Budget Not Set';
-        remaining.style.color = '#6c757d';
-        return;
-    }
-
-    const percentage = Math.min((currentTotal / currentBudget) * 100, 100);
-    const remainingAmount = currentBudget - currentTotal;
-    
-    fill.style.width = `${percentage}%`;
-    fill.textContent = `${percentage.toFixed(0)}% Spent`;
-
-    if (percentage > 100) {
-        fill.style.backgroundColor = 'var(--danger-color)';
-        remaining.textContent = `OVER Budget by ₹${Math.abs(remainingAmount).toFixed(2)}!`;
-        remaining.style.color = 'var(--danger-color)';
-        // speak('Warning: Budget exceeded!'); // Optional: Alert voice for budget
-    } else {
-        fill.style.backgroundColor = 'var(--secondary-color)';
-        remaining.textContent = `Remaining: ₹${remainingAmount.toFixed(2)}`;
-        remaining.style.color = 'var(--secondary-color)';
-    }
-}
-
-function renderList() {
-    const currentListData = getCurrentDayList();
-    const currentList = currentListData.items;
-    const currentBudget = parseFloat(currentListData.budget) || 0;
-
-    listBody.innerHTML = ''; 
-    let grandTotal = 0;
-    let grandTotalBestPrice = 0; 
-    let totalDiscountSavings = 0; 
-
-    const dateText = formatReadableDate(currentDateKey);
-    listDateHeader.textContent = dateText;
-    clearDateText.textContent = dateText;
-    budgetInput.value = currentBudget > 0 ? currentBudget.toFixed(0) : '';
-
-    currentList.forEach((item, index) => {
-        const calculatedQty = item.qtyCalc || convertToCalculationUnit(item.qty, item.unit);
-        const total = calculatedQty * item.finalPrice;
-        grandTotal += total;
-        
-        const originalTotal = calculatedQty * item.price;
-        totalDiscountSavings += (originalTotal - total);
-
-        const bestPriceInfo = getBestPriceAndStore(item.name);
-        let bestPriceText = '';
-        let itemPriceForTotal = item.finalPrice;
-
-        if (bestPriceInfo.price > 0 && bestPriceInfo.price < item.finalPrice) {
-            const savings = ((item.finalPrice - bestPriceInfo.price) * calculatedQty).toFixed(2);
-            bestPriceText = `<span class="best-price-indicator">Save ₹${savings} at ${bestPriceInfo.store} (₹${bestPriceInfo.price.toFixed(2)})</span>`;
-            itemPriceForTotal = bestPriceInfo.price; 
-        }
-        grandTotalBestPrice += (itemPriceForTotal * calculatedQty);
-
-        const previousPrice = getPreviousPrice(item.name, currentDateKey);
-        let priceChangeHtml = '<span class="price-same">--</span>';
-        if (previousPrice > 0 && item.price !== previousPrice) {
-            const diff = item.price - previousPrice;
-            const diffPercent = (diff / previousPrice) * 100;
-            const sign = diff > 0 ? '▲' : '▼';
-            const diffClass = diff > 0 ? 'price-up' : 'price-down';
-            priceChangeHtml = `<span class="${diffClass}">${sign} ${diffPercent.toFixed(1)}%</span>`;
-        }
-
-        let storeIcon = '<i class="fas fa-shopping-bag store-icon" style="color:#6c757d;"></i>'; 
-        if (item.store) {
-            const storeLower = item.store.toLowerCase();
-            if (storeLower.includes('dmart') || storeLower.includes('d mart')) storeIcon = '<i class="fas fa-store store-icon" style="color:#007bff;"></i>';
-            else if (storeLower.includes('reliance') || storeLower.includes('jio')) storeIcon = '<i class="fas fa-tag store-icon" style="color:#dc3545;"></i>';
-            else if (storeLower.includes('local') || storeLower.includes('kirana')) storeIcon = '<i class="fas fa-warehouse store-icon" style="color:#28a745;"></i>';
-        }
-
-        const row = listBody.insertRow();
-        row.className = item.purchased ? 'list-row purchased' : 'list-row';
-        
-        row.innerHTML = `
-            <td>
-                <input type="checkbox" class="purchased-checkbox" 
-                    ${item.purchased ? 'checked' : ''} 
-                    onclick="window.togglePurchased(${index})"
-                >
-            </td>
-            <td>
-                ${storeIcon} ${item.name} <br>
-                <small style="color: #888;">(${item.store || 'No Store'})</small>
-                ${item.discount > 0 ? `<br><span style="color: var(--danger-color); font-weight: bold; font-size: 0.8em;">${item.discount}% OFF</span>` : ''}
-                ${bestPriceText}
-            </td>
-            <td>${item.qty} ${item.unit}</td>
-            <td>
-                <span style="${item.discount > 0 ? 'text-decoration: line-through; color: #888; font-size: 0.8em;' : ''}">₹${item.price.toFixed(2)}</span>
-                ${item.discount > 0 ? `<br>₹${item.finalPrice.toFixed(2)}` : ''} 
-            </td>
-            <td>₹${total.toFixed(2)}</td>
-            <td>${priceChangeHtml}</td> 
-            <td>
-                <button class="delete-btn" onclick="window.deleteItem(${index})">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </td>
-        `;
-    });
-
-    grandTotalDisplay.textContent = `₹${grandTotal.toFixed(2)}`;
-    
-    // Display Savings 
-    const potentialSavings = grandTotal - grandTotalBestPrice;
-    const combinedSavings = potentialSavings + totalDiscountSavings;
-
-    if (combinedSavings > 0) {
-        savingsDisplay.innerHTML = `(Savings: <span style="color: var(--secondary-color); font-weight: bold;">₹${combinedSavings.toFixed(2)}</span>)`;
-    } else {
-        savingsDisplay.textContent = '';
-    }
-
-    updateBudgetBar(grandTotal, currentBudget);
-}
-
-
-window.generateMonthlyReport = function() {
-    if (reportContainer.style.display === 'block') {
-        reportContainer.style.display = 'none';
-        return;
-    }
-    
-    const now = new Date();
-    const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }); 
-    
-    let totalSpent = 0;
-    let totalDiscountSaved = 0;
-    const itemQuantities = {}; 
-    const itemTotalCosts = {}; 
-
-    for (const dateKey in allShoppingLists) {
-        if (dateKey.startsWith(currentYearMonth)) {
-            const listData = allShoppingLists[dateKey];
-            if (listData && listData.items) {
-                listData.items.forEach(item => {
-                    const calculatedQty = item.qtyCalc || convertToCalculationUnit(item.qty, item.unit);
-                    const totalCost = calculatedQty * item.finalPrice; 
-                    totalSpent += totalCost;
-                    
-                    const originalCost = calculatedQty * item.price;
-                    totalDiscountSaved += (originalCost - totalCost);
-                    
-                    const name = item.name.toLowerCase();
-                    itemQuantities[name] = (itemQuantities[name] || 0) + calculatedQty;
-                    itemTotalCosts[name] = (itemTotalCosts[name] || 0) + totalCost;
-                });
-            }
+    function calculateFinal() {
+        playSoftClick();
+        if (!expression) return;
+        try {
+            let result = eval(expression);
+            result = Number.isInteger(result) ? result : result.toFixed(2);
+            saveToHistory(`${expression} = ${result}`);
+            expression = result.toString();
+            updateDisplay();
+        } catch (e) {
+            clearAll();
+            resEl.innerText = "Error";
         }
     }
 
-    let topItem = 'N/A', maxQty = 0;
-    for (const name in itemQuantities) {
-        if (itemQuantities[name] > maxQty) { maxQty = itemQuantities[name]; topItem = name; }
+    function clearAll() { playSoftClick(); expression = ''; resEl.innerText = '0'; updateDisplay(); }
+    function deleteLast() { playSoftClick(); expression = expression.slice(0, -1); updateDisplay(); }
+
+    function saveToHistory(entry) {
+        try {
+            let history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
+            history.unshift(`[${new Date().toLocaleTimeString('en-GB', {hour12:false})}] ${entry}`);
+            localStorage.setItem('calcHistory', JSON.stringify(history.slice(0, 20)));
+        } catch(e) {}
     }
-    
-    let topExpensiveItem = 'N/A', maxCost = 0;
-    for (const name in itemTotalCosts) {
-        if (itemTotalCosts[name] > maxCost) { maxCost = itemTotalCosts[name]; topExpensiveItem = name; }
+
+    function showHistory() {
+        playSoftClick();
+        let history = JSON.parse(localStorage.getItem('calcHistory') || '[]');
+        if (history.length === 0) { alert("History Khali Hai."); return; }
+        let msg = "HISTORY:\n\n" + history.join('\n') + "\n\nOK: Close | Cancel: Clear History";
+        if (!confirm(msg)) {
+            localStorage.removeItem('calcHistory');
+            alert("History Cleared!");
+        }
     }
 
-    const formatName = (name) => name.charAt(0).toUpperCase() + name.slice(1);
-    
-    document.getElementById('report-month').textContent = monthName;
-    document.getElementById('report-total-spent').textContent = `₹${totalSpent.toFixed(2)}`;
-    document.getElementById('report-discount-saved').textContent = `₹${totalDiscountSaved.toFixed(2)}`;
-    document.getElementById('report-top-item').textContent = topItem !== 'N/A' ? `${formatName(topItem)} (${maxQty.toFixed(2)} Units)` : 'N/A';
-    document.getElementById('report-top-expensive').textContent = topExpensiveItem !== 'N/A' ? `${formatName(topExpensiveItem)} (₹${maxCost.toFixed(2)})` : 'N/A';
+    function applyPercentage() {
+        playSoftClick();
+        if (!expression) return;
+        try { 
+            let res = eval(expression) / 100;
+            expression = res.toString();
+            updateDisplay();
+        } catch(e) {}
+    }
 
-    reportContainer.style.display = 'block';
-    speak(`Monthly report is ready. Total spent is ${totalSpent.toFixed(0)} rupees.`); // FIX: English Voice Report Alert
-}
+    function calculateZakat() {
+        playSoftClick();
+        if (!expression) return;
+        try { 
+            let val = eval(expression);
+            let res = (val * 0.025).toFixed(2);
+            saveToHistory(`Zakat on ${val} = ${res}`);
+            expression = res;
+            updateDisplay();
+        } catch(e) {}
+    }
 
+    function applyDiscount() {
+        playSoftClick();
+        let d = prompt("Discount %?");
+        if (d && expression) {
+            try { 
+                let val = eval(expression);
+                let res = (val * (1 - d/100)).toFixed(2);
+                saveToHistory(`${val} - ${d}% Disc = ${res}`);
+                expression = res;
+                updateDisplay();
+            } catch(e) {}
+        }
+    }
 
-// --- Initialization and Events (Finalized) ---
-
-function initialize() {
-    dateInput.value = currentDateKey; 
-
-    dateInput.addEventListener('change', (e) => {
-        currentDateKey = e.target.value;
-        renderList();
-    });
-    
-    // FIX FOR CHROME/COMPATIBILITY: Attach the event listener directly to the Add Item button
-    document.getElementById('add-btn').addEventListener('click', addItem);
-    
-    // Enter Key Jump Logic
-    itemInput.addEventListener('keydown', (e) => { 
-        if (e.key === 'Enter') { e.preventDefault(); qtyInput.focus(); } 
-    });
-    qtyInput.addEventListener('keydown', (e) => { 
-        if (e.key === 'Enter') { e.preventDefault(); unitSelect.focus(); } 
-    });
-    unitSelect.addEventListener('keydown', (e) => { 
-        if (e.key === 'Enter') { e.preventDefault(); priceInput.focus(); } 
-    });
-    priceInput.addEventListener('keydown', (e) => { 
-        if (e.key === 'Enter') { e.preventDefault(); discountInput.focus(); } 
-    });
-    discountInput.addEventListener('keydown', (e) => { 
-        if (e.key === 'Enter') { e.preventDefault(); storeInput.focus(); } 
-    });
-    storeInput.addEventListener('keydown', (e) => { 
-        // When Enter is pressed on the last input, trigger the Add Item function
-        if (e.key === 'Enter') { e.preventDefault(); addItem(); } 
-    });
-
-    renderList();
-}
-
-window.onload = initialize;
+    function handleGST(type) {
+        playSoftClick();
+        let r = prompt("GST %?");
+        if (r && expression) {
+            try { 
+                let val = eval(expression);
+                let res = type === 'A' ? (val*(1+r/100)).toFixed(2) : (val/(1+r/100)).toFixed(2);
+                saveToHistory(`GST ${type} ${r}% = ${res}`);
+                expression = res;
+                updateDisplay();
+            } catch(e) {}
+        }
+    }
 </script>
-
 </body>
 </html>
